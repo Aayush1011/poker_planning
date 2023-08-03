@@ -2,26 +2,26 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --foreground-rgb: 0, 0, 0;
-  --background-start-rgb: 214, 219, 220;
-  --background-end-rgb: 255, 255, 255;
+.sessions-table__data {
+  @apply py-4 px-0 first:ps-0 first:md:ps-8 last:pe-0 last:md:pe-8 border-b border-b-lighter-grey border-solid align-middle text-base text-center capitalize;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --foreground-rgb: 255, 255, 255;
-    --background-start-rgb: 0, 0, 0;
-    --background-end-rgb: 0, 0, 0;
-  }
+.input-component__div--login-signup {
+  @apply max-w-3xl w-full;
 }
 
-body {
-  color: rgb(var(--foreground-rgb));
-  background: linear-gradient(
-      to bottom,
-      transparent,
-      rgb(var(--background-end-rgb))
-    )
-    rgb(var(--background-start-rgb));
+.input-component__label--login-signup {
+  @apply font-bold text-xs tracking-widest uppercase text-gray mb-2;
+}
+
+.input-component__label--new-session-form {
+  @apply font-bold text-xs uppercase tracking-wider text-gray mb-2;
+}
+
+.input-component__field--login-signup {
+  @apply box-border block bg-gray-extra-light border border-solid border-gray-lightest w-full py-3 px-4 placeholder:font-normal placeholder:text-sm placeholder:tracking-widest placeholder:text-gray-dark placeholder:opacity-40 placeholder:capitalize;
+}
+
+.input-component__field--new-session-form {
+  @apply box-border block bg-gray-extra-light border border-solid border-gray-lightest w-full py-3 px-4 resize-none;
 }

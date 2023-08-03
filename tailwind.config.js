@@ -1,18 +1,60 @@
 /** @type {import('tailwindcss').Config} */
 module.exports = {
   content: [
-    './pages/**/*.{js,ts,jsx,tsx,mdx}',
-    './components/**/*.{js,ts,jsx,tsx,mdx}',
-    './app/**/*.{js,ts,jsx,tsx,mdx}',
+    "./pages/**/*.{js,ts,jsx,tsx,mdx}",
+    "./components/**/*.{js,ts,jsx,tsx,mdx}",
+    "./app/**/*.{js,ts,jsx,tsx,mdx}",
   ],
   theme: {
     extend: {
       backgroundImage: {
-        'gradient-radial': 'radial-gradient(var(--tw-gradient-stops))',
-        'gradient-conic':
-          'conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))',
+        "gradient-radial": "radial-gradient(var(--tw-gradient-stops))",
+        "gradient-conic":
+          "conic-gradient(from 180deg at 50% 50%, var(--tw-gradient-stops))",
       },
+      colors: {
+        black: "#252733",
+        "almost-black": "#363740",
+        "light-grey": "#a4a6b3",
+        "lighter-grey": "#dfe0eb",
+        gray: "#9fa2b4",
+        "gray-light": "#c5c7cd",
+        "gray-dark": "#4b506d",
+        "main-blue": "#3751ff",
+        "main-blue-opacity": "#4da9f012",
+        "gray-extra-light": "#fcfdfe",
+        "gray-lightest": "#f0f1f7",
+        "main-lightblue": "#dde2ff",
+        "main-blue": "#4da9f0",
+        "hover-blue": "#4dd1f0",
+        "main-orange": "#f0944d",
+        "hover-orange": "#f0bc4d",
+        purple: "#3751ff3d",
+        error: "#f04d7b",
+        success: "#4df0a9",
+      },
+      transitionDuration: {
+        5000: "5000ms",
+      },
+    },
+    spacing: {
+      0: "0px",
+      1: "4px",
+      2: "8px",
+      3: "12px",
+      4: "16px",
+      5: "20px",
+      6: "24px",
+      7: "28px",
+      8: "32px",
+      9: "36px",
+      10: "40px",
+      11: "44px",
+      12: "48px",
+      13: "52px",
+      14: "56px",
+      15: "60px",
     },
   },
   plugins: [],
-}
+};
