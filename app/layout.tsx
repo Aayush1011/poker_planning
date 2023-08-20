@@ -4,6 +4,7 @@ import { Inter } from "next/font/google";
 import Toastify from "@/components/toastify";
 import AuthProvider from "@/components/protected";
 import TopBar from "@/components/TopBar";
+import IsModeratorContextProvider from "@/contexts/IsModerator";
 
 const inter = Inter({ subsets: ["latin"], fallback: ["sans-serif"] });
 
@@ -22,8 +23,10 @@ export default function RootLayout({
       <body className={inter.className}>
         <Toastify />
         <AuthProvider />
-        <TopBar />
-        {children}
+        <IsModeratorContextProvider>
+          <TopBar />
+          {children}
+        </IsModeratorContextProvider>
       </body>
     </html>
   );

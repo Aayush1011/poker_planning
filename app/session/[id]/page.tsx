@@ -1,74 +1,44 @@
 "use client";
 
-import { SessionDetails } from "@/types";
-import { API } from "@/api";
-import { getUserId } from "@/utils";
-
-import { useEffect, useState } from "react";
-import { toast } from "react-toastify";
-import { MdOutlineContentCopy } from "react-icons/md";
+import { useEffect, useContext } from "react";
+import { API, leaveRoom, socket } from "@/api";
+import { getUserId, getUserName } from "@/utils";
+import { IsModeratorContext } from "@/contexts/IsModerator";
+import { AddParticipantAPIReturn, IIsModeratorContext } from "@/types";
 
 const SessionPage = ({ params }: { params: { id: string } }) => {
-  const [sessionDetails, setSessionDetails] = useState<SessionDetails>({
-    name: "",
-    description: "",
-    message: "",
-    status: "",
-  });
-  const [currentUrl, setCurrentUrl] = useState("");
-  const getSessionDetails = async () => {
-    const result: SessionDetails = await API.getSession(params.id);
-    if (result.message === "session retrieved") {
-      setSessionDetails(result);
-    }
-  };
+  const { isModerator, setIsModerator } = useContext(
+    IsModeratorContext
+  ) as IIsModeratorContext;
   const addNewParticipant = async () => {
-    await API.addParticipant(getUserId(), params.id, "member");
+    const participant: AddParticipantAPIReturn = await API.addParticipant(
+      getUserId(),
+      params.id,
+      "member"
+    );
+    if (
+      ["new participant added", "user has already joined session"].includes(
+        participant.message
+      )
+    ) {
+      setIsModerator(participant.role === "moderator");
+    }
   };
   useEffect(() => {
-    getSessionDetails();
     addNewParticipant();
-    if (typeof window !== undefined) {
-      setCurrentUrl(window.location.href);
-    }
+    socket.emit("room", {
+      action: "join",
+      id: params.id,
+      username: getUserName(),
+      role: isModerator ? "moderator" : "member",
+    });
+
+    window.addEventListener("beforeunload", () => leaveRoom(params.id));
+    return () =>
+      window.removeEventListener("beforeunload", () => leaveRoom(params.id));
   }, []);
 
-  const copyToClipboard = () => {
-    navigator.clipboard.writeText(currentUrl).then(
-      () => {
-        toast.success("Session link copied");
-      },
-      () => {
-        toast.error("Could not copy to clipboard");
-      }
-    );
-  };
-
-  return (
-    <div className="block p-5 md:flex md:p-10">
-      <div className="w-full md:w-4/5 md:pe-3">
-        <div className="py-3 font-medium">
-          <h1 className="text-3xl text-almost-black">
-            Session name:
-            <span className="text-gray capitalize"> {sessionDetails.name}</span>
-          </h1>
-        </div>
-        <div className="font-medium py-5 text-xl">
-          <p className="text-almost-black mb-3">Description</p>
-          <p className="text-gray capitalize">{sessionDetails.description}</p>
-        </div>
-        <div
-          className="flex justify-between shadow-[0px_4px_12px_#3651ff3d] text-xl py-4 px-5 my-4 mx-0 break-all hover:bg-main-blue-opacity cursor-pointer"
-          onClick={copyToClipboard}
-        >
-          <p>
-            Invite Members: <span className="text-gray">{currentUrl}</span>
-          </p>
-          <MdOutlineContentCopy />
-        </div>
-      </div>
-    </div>
-  );
+  return <></>;
 };
 
 export default SessionPage;

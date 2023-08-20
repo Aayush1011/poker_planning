@@ -49,6 +49,7 @@ export interface ButtonComponentProps {
 
 export interface TopBarProps {
   onMenuClick?: React.MouseEventHandler<HTMLDivElement>;
+  params?: { id: string };
 }
 
 export interface PreviousSessionRowsProps {
@@ -87,3 +88,56 @@ export interface PaginationProps {
   currentPageSetter: React.Dispatch<React.SetStateAction<number>>;
   currentPage: number;
 }
+
+export interface FormState extends Omit<SingleStory, "id"> {
+  id?: number;
+}
+
+export interface StoryFormComponentProps {
+  sessionId: string;
+  formState: FormState;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
+  mode: string;
+  setMode: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface APIReturn {
+  message: string;
+  id?: string | number;
+  data?: string[];
+}
+export interface SingleStoryComponentProps extends SingleStory {
+  sessionId: string;
+  setFormState: React.Dispatch<React.SetStateAction<FormState>>;
+  setMode: React.Dispatch<React.SetStateAction<string>>;
+}
+
+export interface SingleStory {
+  id: number;
+  name: string;
+  description: string;
+}
+
+export interface GetStoriesAPIReturn {
+  message: string;
+  stories?: SingleStory[];
+}
+
+export interface StorySocketReturn {
+  action: string;
+  id: number;
+  name?: string;
+  description?: string;
+}
+
+export interface IIsModeratorContext {
+  isModerator: boolean;
+  setIsModerator: React.Dispatch<React.SetStateAction<boolean>>;
+}
+
+export interface AddParticipantAPIReturn {
+  message: string;
+  role: string;
+}
+
+export interface StoryVotingComponentProps extends SingleStory {}

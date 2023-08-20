@@ -35,21 +35,34 @@ export const getUserCredentials = () => {
 
 export const getUserId = () => {
   if (typeof window !== "undefined") {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user)["id"] : null;
+    const user = getUserCredentials();
+
+    return user ? user["id"] : null;
   }
 };
 
 export const getUserName = () => {
   if (typeof window !== "undefined") {
-    const user = localStorage.getItem("user");
-    return user ? JSON.parse(user)["userName"] : null;
+    const user = getUserCredentials();
+    return user ? user["userName"] : null;
   }
 };
 
 export const getJwtToken = () => {
   if (typeof window !== "undefined") {
     return sessionStorage.getItem("jwt");
+  }
+};
+
+export const storeStoryId = (id: number) => {
+  if (typeof window !== undefined) {
+    sessionStorage.setItem("vote", `${id}`);
+  }
+};
+
+export const retrieveStoryId = () => {
+  if (typeof window !== undefined) {
+    return sessionStorage.getItem("vote");
   }
 };
 

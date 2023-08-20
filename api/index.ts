@@ -1,11 +1,11 @@
 import axios, { AxiosError, AxiosRequestConfig, AxiosResponse } from "axios";
 import { JwtPayload, decode } from "jsonwebtoken";
-import { toast } from "react-toastify";
+import { io } from "socket.io-client";
 
 import { LogInData, NewSessionDetails, SignUpData } from "@/types";
-import { getJwtToken, getUserId, setJwtToken } from "@/utils";
+import { getJwtToken, setJwtToken } from "@/utils";
 
-const API_URL = "http://localhost:5000/";
+export const API_URL = "http://localhost:5000/";
 
 const API_CLIENT = axios.create({
   baseURL: API_URL,
@@ -62,7 +62,7 @@ API_CLIENT.interceptors.response.use(
 
 export const API = {
   signup: async (userData: SignUpData) => {
-    const response = await API_CLIENT.put("user/signup", userData, {
+    const response = await API_CLIENT.put("auth/signup", userData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -71,7 +71,7 @@ export const API = {
   },
 
   login: async (userData: LogInData) => {
-    const response = await API_CLIENT.post("user/login", userData, {
+    const response = await API_CLIENT.post("auth/login", userData, {
       headers: {
         "Content-Type": "application/json",
       },
@@ -82,7 +82,7 @@ export const API = {
 
   refreshJwt: async (fingerprint: Record<string, string>) => {
     const response = await axios.post(
-      `${API_URL}user/refresh-jwt`,
+      `${API_URL}auth/refresh-jwt`,
       fingerprint,
       {
         headers: {
@@ -95,7 +95,7 @@ export const API = {
   },
 
   getSession: async (sessionId: string) => {
-    const response = await API_CLIENT.get(`session/${sessionId}`);
+    const response = await API_CLIENT.get(`sessions/${sessionId}`);
     return response.data;
   },
 
@@ -105,7 +105,7 @@ export const API = {
       fetchOffset: `${offset ? offset : 0}`,
     });
     const response = await API_CLIENT.get(
-      `user/${userId}/sessions?${searchParams}`
+      `users/${userId}/sessions?${searchParams}`
     );
     return response.data;
   },
@@ -121,7 +121,7 @@ export const API = {
 
   addParticipant: async (userId: number, sessionId: string, role: string) => {
     const response = await API_CLIENT.post(
-      `/session/${sessionId}/user/${userId}`,
+      `/sessions/${sessionId}/users/${userId}`,
       { role },
       {
         headers: {
@@ -131,4 +131,58 @@ export const API = {
     );
     return response.data;
   },
+
+  addStory: async (
+    sessionId: string,
+    userId: number,
+    name: string,
+    description: string
+  ) => {
+    const response = await API_CLIENT.post(
+      `/sessions/${sessionId}/story`,
+      { userId, name, description },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  },
+
+  getStories: async (sessionId: string) => {
+    const response = await API_CLIENT.get(`/sessions/${sessionId}/stories`);
+    return response.data;
+  },
+
+  editStory: async (
+    sessionId: string,
+    storyId: number,
+    name: string,
+    description: string
+  ) => {
+    const response = await API_CLIENT.put(
+      `/sessions/${sessionId}/stories/${storyId}`,
+      { name, description },
+      {
+        headers: {
+          "Content-Type": "application/json",
+        },
+      }
+    );
+    return response.data;
+  },
+
+  deleteStory: async (sessionId: string, storyId: number) => {
+    const response = await API_CLIENT.delete(
+      `/sessions/${sessionId}/stories/${storyId}`
+    );
+    return response.data;
+  },
+};
+
+export const socket = io(API_URL);
+
+export const leaveRoom = (id: string) => {
+  socket.emit("room", { action: "leave", id });
 };

@@ -52,7 +52,8 @@ const useUserHook = () => {
       //TODO: subscribe to session websocket
       router.push(callbackUrl);
     } else {
-      toast.error(output.data?.join(" \u26D4 "));
+      const error = output.data ? output.data.join(" \u26D4 ") : output.message;
+      toast.error(error);
     }
   };
 

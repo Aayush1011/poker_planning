@@ -13,27 +13,15 @@ import {
   useParams,
   useSelectedLayoutSegments,
 } from "next/navigation";
-import { API } from "@/api";
+import { API, leaveRoom } from "@/api";
 import { toast } from "react-toastify";
 
 const AuthProvider = () => {
-  const [token, setToken] = useState<string | null>(null);
+  let sessionPagePath: string;
   const router = useRouter();
   const paths = useSelectedLayoutSegments();
   const pathname = usePathname();
   const params = useParams();
-
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     setToken(getJwtToken()!);
-  //   }
-  // }, []);
-
-  // useEffect(() => {
-  //   if (typeof window !== "undefined") {
-  //     setToken(getJwtToken()!);
-  //   }
-  // }, [paths]);
 
   useEffect(() => {
     const carryOutJwtRefresh = async () => {
@@ -62,25 +50,35 @@ const AuthProvider = () => {
               router.push("/");
             }
           }
-        }
-
-        if (paths.length === 2 && paths.includes("session") && params.id) {
+        } else if (
+          paths.length === 2 &&
+          paths.includes("session") &&
+          params.id
+        ) {
           toast.error("Please log in first");
           const searchParams = new URLSearchParams(window.location.search);
           searchParams.set("callbackUrl", params.id);
           const newPathname = `/?${searchParams.toString()}`;
           router.push(newPathname);
-        }
-        if (paths.length === 1 && paths.includes("home")) {
+        } else if (paths.length === 1 && paths.includes("home")) {
           router.push("/");
         }
       } else {
         if (paths.length === 0 && pathname === "/") {
           router.push("/home");
+        } else if (
+          paths.length === 2 &&
+          paths.includes("session") &&
+          params.id
+        ) {
+          sessionPagePath = pathname;
         }
       }
+      if (sessionPagePath !== pathname) {
+        leaveRoom(params.id);
+      }
     }
-  }, []);
+  }, [pathname]);
 
   return <></>;
 };

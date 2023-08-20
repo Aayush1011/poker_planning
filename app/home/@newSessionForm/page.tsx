@@ -9,6 +9,7 @@ import ButtonComponent from "@/components/ButtonComponent";
 import { API } from "@/api";
 import { useRouter } from "next/navigation";
 import { getUserId } from "@/utils";
+import { APIReturn } from "@/types";
 
 const NewSession = () => {
   const router = useRouter();
@@ -28,12 +29,11 @@ const NewSession = () => {
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const result: { message: string; id?: string; data?: string[] } =
-      await API.createSession(formState);
+    const result: APIReturn = await API.createSession(formState);
     if (result.message === "new session created") {
       const participantAddition: { message: string } = await API.addParticipant(
         getUserId(),
-        result.id!,
+        result.id! as string,
         "moderator"
       );
       if (participantAddition.message === "new participant added") {

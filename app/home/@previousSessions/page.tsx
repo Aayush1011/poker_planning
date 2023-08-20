@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 
 import { UserSessionsData } from "@/types";
 import { API } from "@/api";
-import PreviousSessionRows from "@/components/PreviousSessionRows";
+import PreviousSessionRows from "@/components/HomePage/PreviousSessionRows";
 import Pagination from "@/components/Pagination";
 import { getUserId } from "@/utils";
 

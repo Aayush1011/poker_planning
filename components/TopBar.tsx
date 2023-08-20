@@ -4,9 +4,9 @@ import { useState, useEffect } from "react";
 import { RiMenu2Line, RiMenu3Line } from "react-icons/ri";
 import { MdClose } from "react-icons/md";
 import { RxAvatar } from "react-icons/rx";
+import { MdLogout } from "react-icons/md";
 import { Signika } from "next/font/google";
 
-import ButtonComponent from "./ButtonComponent";
 import { getUserName, removeUserCredentials } from "@/utils";
 import { TopBarProps } from "@/types";
 import {
@@ -28,9 +28,7 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
   const segment = useSelectedLayoutSegment();
   const params = useParams();
 
-  useEffect(() => {
-    setUserName(getUserName());
-  }, []);
+  useEffect(() => setUserName(getUserName()), []);
 
   const handleLogOut = () => {
     removeUserCredentials();
@@ -69,17 +67,21 @@ const TopBar = ({ onMenuClick }: TopBarProps) => {
               >
                 <MdClose />
               </div>
-              <div className="flex gap-x-4 font-normal items-center">
+              <div className="flex gap-x-4 font-normal items-center cursor-default">
                 <div className="text-4xl">
                   <RxAvatar />
                 </div>
-                <div className="text-center">{userName}</div>
+                <div className="text-center" title="UserName">
+                  {userName}
+                </div>
               </div>
-              <ButtonComponent
-                text="Log Out"
-                colorClass="bg-error -mt-0"
-                callback={handleLogOut}
-              />
+              <div
+                onClick={handleLogOut}
+                className="text-3xl cursor-pointer"
+                title="LogOut"
+              >
+                <MdLogout />
+              </div>
             </div>
             {params?.id && (
               <div className="md:hidden text-sm" onClick={onMenuClick}>
